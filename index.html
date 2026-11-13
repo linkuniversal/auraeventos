@@ -1,1 +1,1848 @@
-AURA EVENTOS
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>AURA Eventos | Salón Infantil, Pelotero &amp; Celebraciones en Puerto Iguazú</title>
+    <meta name="description" content="Un espacio renovado para celebrar en grande en Puerto Iguazú. Cumpleaños temáticos soñados, sector kids, pelotero libre y salón 100% climatizado.">
+
+    <meta name="theme-color" content="#02482A">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
+    <!-- TIPOGRAFÍAS DE PRESTIGIO: FRAUNCES + PLUS JAKARTA SANS + SPACE GROTESK -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,700;0,9..144,800;0,9..144,900;1,9..144,700;1,9..144,800&family=Plus+Jakarta+Sans:wght@500;600;700;800;900&family=Space+Grotesk:wght@600;700;800&display=swap" rel="stylesheet">
+
+    <!-- MOTOR DE MAPA INTERACTIVO LEAFLET HD -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+    <style>
+        /* ==========================================================================
+           1. SISTEMA CROMÁTICO AURA: VERDE BOSQUE OFICIAL + MAGIA Y CONFETI VIVO
+           ========================================================================== */
+        :root {
+            --aura-forest-deep: #02482A;     /* Verde Oficial AURA */
+            --aura-forest-midnight: #012B19; /* Profundidad y base */
+            --aura-forest-surface: #045C36;  /* Superficies translúcidas */
+            --aura-forest-card: rgba(3, 61, 35, 0.88);
+
+            --aura-mint-glow: #29D686;       /* Acento Menta Neón */
+            --aura-gold-star: #FBBF24;       /* Dorado confeti festivo */
+            --aura-pink-candy: #F472B6;      /* Rosa algodón dulce */
+            --aura-cyan-sky: #38BDF8;        /* Celeste pelotero */
+            
+            --aura-white-pure: #FFFFFF;
+            --aura-white-soft: #F0FDF4;
+            --aura-text-muted: #A7F3D0;
+
+            --border-glass: rgba(255, 255, 255, 0.16);
+            --border-glow-mint: rgba(41, 214, 134, 0.45);
+            --border-glow-gold: rgba(251, 191, 36, 0.45);
+
+            --font-display: 'Fraunces', Georgia, serif;
+            --font-sans: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+            --font-mono: 'Space Grotesk', monospace;
+
+            --shadow-card: 0 12px 30px -6px rgba(1, 35, 20, 0.55), 0 3px 8px rgba(0, 0, 0, 0.25);
+            --shadow-float: 0 16px 36px -8px rgba(41, 214, 134, 0.28);
+            --spring: cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        *, *::before, *::after {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        html {
+            width: 100%;
+            max-width: 100vw;
+            overflow-x: hidden;
+            background-color: var(--aura-forest-deep);
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: var(--font-sans);
+            color: var(--aura-white-pure);
+            background-color: var(--aura-forest-deep);
+            min-height: 100vh;
+            min-height: 100dvh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 0 12px calc(80px + env(safe-area-inset-bottom, 20px));
+            position: relative;
+            letter-spacing: -0.01em;
+            overflow-x: hidden;
+        }
+
+        /* ==========================================================================
+           2. PATRÓN CINEMÁTICO FESTIVO CON MATICES VISIBLES A 45°
+           ========================================================================== */
+        .aura-ambient-canvas {
+            position: fixed;
+            inset: -40%;
+            width: 180%;
+            height: 180%;
+            z-index: 0;
+            pointer-events: none;
+            transform: rotate(-45deg);
+            background-image: 
+                /* Estrellas doradas, destellos menta, confetti y arcos */
+                url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120' viewBox='0 0 120 120'%3E%3Cpath d='M60 14 Q64 36 86 40 Q64 44 60 66 Q56 44 34 40 Q56 36 60 14 Z' fill='%23FBBF24' fill-opacity='0.16'/%3E%3Ccircle cx='18' cy='18' r='5' fill='%2329D686' fill-opacity='0.20'/%3E%3Ccircle cx='104' cy='96' r='6' fill='%2338BDF8' fill-opacity='0.18'/%3E%3Cpath d='M10 85 Q25 70 40 85 T70 85' stroke='%23FFFFFF' stroke-width='1.8' stroke-opacity='0.14' fill='none' stroke-linecap='round'/%3E%3Ccircle cx='95' cy='22' r='4' fill='%23F472B6' fill-opacity='0.22'/%3E%3Ccircle cx='38' cy='112' r='3' fill='%23FBBF24' fill-opacity='0.25'/%3E%3C/svg%3E");
+            background-size: 120px 120px;
+            background-repeat: repeat;
+            opacity: 0.95;
+            animation: auraConfettiDrift 60s linear infinite;
+            will-change: background-position;
+        }
+
+        @keyframes auraConfettiDrift {
+            0%   { background-position: 0 0; }
+            100% { background-position: 1200px 1200px; }
+        }
+
+        /* Resplandor superior concentrado para destacar el logo suelto */
+        .aura-spotlight-veil {
+            position: fixed;
+            top: 0; left: 50%;
+            transform: translateX(-50%);
+            width: min(650px, 100vw);
+            height: 280px;
+            background: radial-gradient(ellipse at 50% 0%, rgba(41, 214, 134, 0.32) 0%, rgba(251, 191, 36, 0.12) 45%, transparent 78%);
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        /* ==========================================================================
+           3. MARQUESINA INSTITUCIONAL SUPERIOR
+           ========================================================================== */
+        .marquee-strip-flow {
+            width: calc(100% + 24px);
+            margin-left: -12px;
+            margin-right: -12px;
+            background: rgba(1, 35, 20, 0.95);
+            border-bottom: 1px solid var(--border-glass);
+            color: var(--aura-white-pure);
+            overflow: hidden;
+            padding: 8px 0;
+            display: flex;
+            white-space: nowrap;
+            position: relative;
+            z-index: 20;
+            box-shadow: 0 4px 14px rgba(0, 0, 0, 0.25);
+        }
+
+        .marquee-track-unit {
+            display: inline-flex;
+            gap: 24px;
+            animation: tickerTapeFlow 28s linear infinite;
+            will-change: transform;
+        }
+
+        .marquee-track-unit span {
+            font-family: var(--font-mono);
+            font-size: 0.74rem;
+            font-weight: 800;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .bullet-star {
+            color: var(--aura-gold-star);
+            font-size: 0.85rem;
+        }
+
+        @keyframes tickerTapeFlow {
+            0%   { transform: translateX(0); }
+            100% { transform: translateX(-50%); }
+        }
+
+        /* ==========================================================================
+           4. SHELL PRINCIPAL CON PROPORCIÓN ÁUREA Y ADAPTABILIDAD TOTAL
+           ========================================================================== */
+        .master-hub-shell {
+            width: 100%;
+            max-width: 470px;
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+            z-index: 10;
+            position: relative;
+            margin: 0 auto;
+            padding-top: 14px;
+            box-sizing: border-box;
+            overflow-x: hidden;
+        }
+
+        /* ==========================================================================
+           5. TOP INSTITUTIONAL BAR
+           ========================================================================== */
+        .top-institutional-bar {
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 8px;
+        }
+
+        .pill-instagram-btn {
+            background: rgba(2, 72, 42, 0.88);
+            border: 1px solid var(--border-glow-mint);
+            border-radius: 999px;
+            padding: 6px 14px;
+            text-decoration: none;
+            color: var(--aura-white-pure);
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.25);
+            transition: all 0.22s var(--spring);
+        }
+
+        .pill-instagram-btn:hover {
+            transform: translateY(-2px);
+            border-color: var(--aura-mint-glow);
+            color: var(--aura-mint-glow);
+        }
+
+        .pill-instagram-btn svg {
+            width: 15px;
+            height: 15px;
+            fill: var(--aura-mint-glow);
+        }
+
+        .pill-instagram-text {
+            font-family: var(--font-mono);
+            font-size: 0.72rem;
+            font-weight: 800;
+            letter-spacing: 0.05em;
+        }
+
+        .badge-live-schedule {
+            background: rgba(41, 214, 134, 0.16);
+            border: 1px solid var(--aura-mint-glow);
+            border-radius: 999px;
+            padding: 6px 12px;
+            font-family: var(--font-mono);
+            font-size: 0.67rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            color: var(--aura-white-pure);
+        }
+
+        .beacon-spark {
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            background: var(--aura-mint-glow);
+            box-shadow: 0 0 10px var(--aura-mint-glow);
+            animation: pulseRadio 1.8s infinite;
+        }
+
+        @keyframes pulseRadio {
+            0%, 100% { transform: scale(1); opacity: 1; }
+            50%      { transform: scale(0.65); opacity: 0.45; }
+        }
+
+        /* ==========================================================================
+           6. LOGO OFICIAL SUELTO: MÁXIMO PODERÍO & JERARQUÍA (SIN RECUADROS)
+           ========================================================================== */
+        .hero-logo-monument {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            padding: 8px 0 2px;
+            position: relative;
+        }
+
+        .logo-free-stage {
+            width: 100%;
+            max-width: 360px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            cursor: pointer;
+            filter: drop-shadow(0 6px 20px rgba(0, 0, 0, 0.45)) drop-shadow(0 0 18px rgba(41, 214, 134, 0.35));
+            transition: transform 0.35s var(--spring);
+            margin: 4px auto 0;
+        }
+
+        .logo-free-stage:hover {
+            transform: scale(1.03) translateY(-2px);
+        }
+
+        .logo-svg-master {
+            width: 100%;
+            height: auto;
+            max-height: 120px;
+            display: block;
+        }
+
+        .logo-glass-reflection {
+            width: 100%;
+            max-width: 360px;
+            height: 48px;
+            margin-top: -6px;
+            overflow: hidden;
+            opacity: 0.22;
+            transform: scaleY(-0.85);
+            filter: blur(0.9px);
+            mask-image: linear-gradient(to top, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0.2) 45%, transparent 100%);
+            -webkit-mask-image: linear-gradient(to top, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0.2) 45%, transparent 100%);
+            pointer-events: none;
+        }
+
+        /* ==========================================================================
+           7. RECUADRO COMPACTO Y ÁUREO (SÍNTESIS HUMANA)
+           ========================================================================== */
+        .hero-compact-card {
+            background: linear-gradient(145deg, rgba(4, 92, 54, 0.85) 0%, rgba(1, 43, 25, 0.92) 100%);
+            border: 1.5px solid var(--border-glass);
+            border-radius: 22px;
+            padding: 14px 16px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            box-shadow: var(--shadow-card);
+            width: 100%;
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+        }
+
+        .hero-title-edition {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: rgba(251, 191, 36, 0.16);
+            border: 1px solid var(--border-glow-gold);
+            padding: 3px 12px;
+            border-radius: 999px;
+            font-family: var(--font-mono);
+            font-size: 0.68rem;
+            font-weight: 800;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+            color: var(--aura-gold-star);
+        }
+
+        .hero-statement-lead {
+            font-family: var(--font-display);
+            font-size: clamp(1.2rem, 4.4vw, 1.4rem);
+            font-weight: 800;
+            line-height: 1.22;
+            color: var(--aura-white-pure);
+            letter-spacing: -0.01em;
+            margin-top: 8px;
+        }
+
+        .hero-statement-lead em {
+            color: var(--aura-mint-glow);
+            font-style: italic;
+        }
+
+        .hero-tagline-quote {
+            font-size: 0.80rem;
+            line-height: 1.42;
+            color: var(--aura-text-muted);
+            max-width: 96%;
+            margin-top: 6px;
+            font-weight: 500;
+        }
+
+        .hero-tagline-quote strong {
+            color: var(--aura-white-pure);
+            font-weight: 700;
+        }
+
+        /* Insignias ondulantes flameantes */
+        .merits-wave-strip {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            flex-wrap: wrap;
+            margin-top: 10px;
+            perspective: 800px;
+        }
+
+        .merit-wave-pill {
+            font-family: var(--font-mono);
+            font-size: 0.64rem;
+            font-weight: 800;
+            letter-spacing: 0.04em;
+            text-transform: uppercase;
+            padding: 4px 10px;
+            border-radius: 999px;
+            background: rgba(255, 255, 255, 0.09);
+            color: var(--aura-white-pure);
+            border: 1px solid var(--border-glass);
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            transform-origin: left center;
+            animation: flagWave 4.2s cubic-bezier(0.45, 0.05, 0.55, 0.95) infinite;
+        }
+
+        .merit-wave-pill:nth-child(1) { animation-delay: 0s; border-color: rgba(41, 214, 134, 0.45); color: #E8FDEE; }
+        .merit-wave-pill:nth-child(2) { animation-delay: 0.28s; border-color: rgba(251, 191, 36, 0.45); color: #FFF8E6; }
+        .merit-wave-pill:nth-child(3) { animation-delay: 0.56s; border-color: rgba(56, 189, 248, 0.45); color: #EAF8FF; }
+        .merit-wave-pill:nth-child(4) { animation-delay: 0.84s; border-color: rgba(244, 114, 182, 0.45); color: #FEEBF4; }
+
+        @keyframes flagWave {
+            0%   { transform: translateY(0px) rotate(0deg); }
+            25%  { transform: translateY(-2.5px) rotate(1deg); }
+            50%  { transform: translateY(1.2px) rotate(-0.8deg); }
+            75%  { transform: translateY(-1.2px) rotate(0.6deg); }
+            100% { transform: translateY(0px) rotate(0deg); }
+        }
+
+        /* ==========================================================================
+           8. HERO CTA WHATSAPP: "QUIERO FESTEJAR" (LÍQUIDO MAGNÉTICO)
+           ========================================================================== */
+        .card-hero-whatsapp {
+            background: linear-gradient(135deg, #25D366 0%, #138D40 100%);
+            border: 2px solid #FFFFFF;
+            border-radius: 24px 14px 24px 14px;
+            padding: 18px 20px;
+            text-decoration: none;
+            color: #FFFFFF;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 14px;
+            box-shadow: 0 14px 34px rgba(37, 211, 102, 0.36);
+            position: relative;
+            overflow: hidden;
+            transition: all 0.28s var(--spring);
+            cursor: pointer;
+            width: 100%;
+        }
+
+        .card-hero-whatsapp::before {
+            content: '';
+            position: absolute;
+            top: 0; left: -140%;
+            width: 60%; height: 100%;
+            background: linear-gradient(90deg, transparent 0%, rgba(255, 255, 255, 0.42) 50%, transparent 100%);
+            transform: skewX(-25deg);
+            animation: sheenHeroLight 4.8s infinite ease-in-out;
+            pointer-events: none;
+        }
+
+        @keyframes sheenHeroLight {
+            0%, 55% { left: -140%; }
+            85%, 100% { left: 180%; }
+        }
+
+        .card-hero-whatsapp:hover {
+            transform: translateY(-2.5px) scale(1.01);
+            box-shadow: 0 18px 44px rgba(37, 211, 102, 0.48);
+        }
+
+        .hero-wpp-content {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+            z-index: 2;
+        }
+
+        .hero-wpp-tag {
+            font-family: var(--font-mono);
+            font-size: 0.65rem;
+            font-weight: 800;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            color: #E2FCEE;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .hero-wpp-title {
+            font-family: var(--font-display);
+            font-size: 1.4rem;
+            font-weight: 900;
+            line-height: 1.15;
+            color: #FFFFFF;
+        }
+
+        .hero-wpp-sub {
+            font-size: 0.77rem;
+            color: #F0FDF4;
+            font-weight: 600;
+        }
+
+        .hero-wpp-circle-badge {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            background: #FFFFFF;
+            color: #128C40;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            box-shadow: 0 4px 14px rgba(0, 0, 0, 0.22);
+            transition: transform 0.3s var(--spring);
+            z-index: 2;
+        }
+
+        .card-hero-whatsapp:hover .hero-wpp-circle-badge {
+            transform: scale(1.1) rotate(12deg);
+        }
+
+        .hero-wpp-circle-badge svg {
+            width: 25px;
+            height: 25px;
+            fill: #128C40;
+        }
+
+        /* ==========================================================================
+           9. GRILLA BENTO MORFOLÓGICA CON MATICES VIVOS
+           ========================================================================== */
+        .aura-bento-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 10px;
+            width: 100%;
+        }
+
+        .bento-cell-card {
+            padding: 16px 14px;
+            border-radius: 20px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            text-decoration: none;
+            position: relative;
+            overflow: hidden;
+            border: 1.5px solid var(--border-glass);
+            background: linear-gradient(145deg, rgba(4, 92, 54, 0.78) 0%, rgba(2, 60, 35, 0.88) 100%);
+            backdrop-filter: blur(14px);
+            box-shadow: var(--shadow-card);
+            transition: all 0.25s var(--spring);
+            min-height: 138px;
+            color: var(--aura-white-pure);
+            cursor: pointer;
+        }
+
+        .bento-cell-card:hover {
+            transform: translateY(-2.5px);
+            border-color: var(--aura-mint-glow);
+            box-shadow: var(--shadow-float);
+        }
+
+        .cell-top-meta {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 5px;
+        }
+
+        .cell-chip-tag {
+            font-family: var(--font-mono);
+            font-size: 0.65rem;
+            font-weight: 800;
+            letter-spacing: 0.06em;
+            text-transform: uppercase;
+            color: var(--aura-mint-glow);
+        }
+
+        .cell-poster-headline {
+            font-family: var(--font-display);
+            font-size: 1.22rem;
+            font-weight: 800;
+            line-height: 1.15;
+            color: var(--aura-white-pure);
+        }
+
+        .cell-body-caption {
+            font-size: 0.74rem;
+            margin-top: 4px;
+            line-height: 1.35;
+            font-weight: 500;
+            color: var(--aura-text-muted);
+        }
+
+        /* Destacado: Pelotero Libre $12.000 */
+        .cell-pelotero-glow {
+            background: linear-gradient(135deg, rgba(41, 214, 134, 0.22) 0%, rgba(2, 60, 35, 0.95) 100%);
+            border-color: var(--border-glow-mint);
+        }
+        .cell-pelotero-glow .cell-chip-tag { color: var(--aura-gold-star); }
+
+        /* Full Width: Confort y Climatización */
+        .cell-full-infra {
+            grid-column: span 2;
+            background: linear-gradient(135deg, rgba(251, 191, 36, 0.14) 0%, rgba(2, 72, 42, 0.95) 100%);
+            border-color: var(--border-glow-gold);
+            min-height: auto;
+            flex-direction: row;
+            align-items: center;
+            gap: 12px;
+            padding: 16px 18px;
+        }
+
+        /* ==========================================================================
+           10. SHOWCASE EN RECUADROS HOMOGÉNEOS
+           ========================================================================== */
+        .showcase-enclosure-glass {
+            background: rgba(3, 61, 35, 0.78);
+            backdrop-filter: blur(16px);
+            border: 1.5px solid var(--border-glass);
+            border-radius: 24px;
+            padding: 16px 14px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            box-shadow: var(--shadow-card);
+            width: 100%;
+        }
+
+        .enclosure-header-row {
+            display: flex;
+            align-items: baseline;
+            justify-content: space-between;
+            padding: 0 4px;
+        }
+
+        .enclosure-title-main {
+            font-family: var(--font-display);
+            font-size: 1.40rem;
+            font-weight: 800;
+            color: var(--aura-white-pure);
+        }
+
+        .enclosure-badge-right {
+            font-family: var(--font-mono);
+            font-size: 0.66rem;
+            font-weight: 800;
+            color: var(--aura-mint-glow);
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+        }
+
+        .carousel-inner-track {
+            display: flex;
+            gap: 10px;
+            overflow-x: auto;
+            scroll-snap-type: x mandatory;
+            padding: 2px 2px 8px;
+            scrollbar-width: none;
+            -webkit-overflow-scrolling: touch;
+        }
+        .carousel-inner-track::-webkit-scrollbar { display: none; }
+
+        .reel-scroll-card {
+            flex: 0 0 142px;
+            height: 226px;
+            scroll-snap-align: start;
+            border-radius: 18px;
+            overflow: hidden;
+            position: relative;
+            background: #011E12;
+            border: 1.5px solid var(--border-glass);
+            box-shadow: 0 6px 18px rgba(0,0,0,0.3);
+            cursor: pointer;
+            transition: transform 0.25s var(--spring);
+        }
+
+        .reel-scroll-card:hover {
+            transform: scale(1.03) translateY(-2px);
+            border-color: var(--aura-mint-glow);
+        }
+
+        .reel-scroll-card video, .reel-scroll-card img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+
+        .reel-scroll-tag {
+            position: absolute;
+            top: 7px; left: 7px;
+            font-family: var(--font-mono);
+            font-size: 0.58rem;
+            font-weight: 800;
+            background: rgba(1, 43, 25, 0.88);
+            backdrop-filter: blur(4px);
+            color: var(--aura-white-pure);
+            padding: 3px 8px;
+            border-radius: 999px;
+            text-transform: uppercase;
+            border: 1px solid var(--border-glass);
+            z-index: 2;
+        }
+
+        .reel-scroll-caption {
+            position: absolute;
+            bottom: 0; left: 0; right: 0;
+            padding: 16px 8px 8px;
+            background: linear-gradient(to top, rgba(1, 35, 20, 0.95) 0%, transparent 100%);
+            font-size: 0.70rem;
+            font-weight: 700;
+            color: #FFFFFF;
+            text-align: center;
+            z-index: 2;
+        }
+
+        /* ==========================================================================
+           11. CARTA & ESPACIOS (GRILLA FOTOGRÁFICA ÁUREA)
+           ========================================================================== */
+        .category-filter-tabs {
+            display: flex;
+            gap: 6px;
+            overflow-x: auto;
+            scrollbar-width: none;
+            padding-bottom: 4px;
+            width: 100%;
+        }
+        .category-filter-tabs::-webkit-scrollbar { display: none; }
+
+        .cat-tab-btn {
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid var(--border-glass);
+            border-radius: 999px;
+            padding: 5px 12px;
+            font-family: var(--font-mono);
+            font-size: 0.66rem;
+            font-weight: 800;
+            color: var(--aura-white-pure);
+            white-space: nowrap;
+            cursor: pointer;
+            transition: all 0.22s var(--spring);
+            flex-shrink: 0;
+        }
+
+        .cat-tab-btn.active, .cat-tab-btn:hover {
+            background: var(--aura-mint-glow);
+            color: var(--aura-forest-midnight);
+            border-color: var(--aura-mint-glow);
+            transform: translateY(-2px);
+        }
+
+        .btn-shuffle-reload {
+            background: rgba(255, 255, 255, 0.10);
+            border: 1px solid var(--border-glass);
+            color: var(--aura-white-pure);
+            font-family: var(--font-mono);
+            font-size: 0.66rem;
+            font-weight: 800;
+            padding: 5px 12px;
+            border-radius: 999px;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            transition: all 0.2s ease;
+        }
+
+        .btn-shuffle-reload:hover {
+            background: var(--aura-gold-star);
+            color: var(--aura-forest-midnight);
+        }
+
+        .gallery-cards-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 9px;
+            width: 100%;
+        }
+
+        .gallery-photo-card {
+            background: rgba(255, 255, 255, 0.06);
+            border: 1.5px solid var(--border-glass);
+            border-radius: 18px;
+            padding: 7px;
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+            cursor: pointer;
+            box-shadow: var(--shadow-card);
+            transition: transform 0.25s var(--spring), border-color 0.25s ease;
+        }
+
+        .gallery-photo-card:hover {
+            transform: translateY(-2.5px);
+            border-color: var(--aura-mint-glow);
+        }
+
+        .photo-img-wrap {
+            width: 100%;
+            height: 135px;
+            border-radius: 12px;
+            overflow: hidden;
+            background: #012415;
+            position: relative;
+        }
+
+        .photo-img-wrap img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+            transition: transform 0.4s ease;
+        }
+
+        .gallery-photo-card:hover .photo-img-wrap img {
+            transform: scale(1.08);
+        }
+
+        .photo-cat-tag {
+            position: absolute;
+            top: 5px; left: 5px;
+            background: rgba(1, 43, 25, 0.88);
+            backdrop-filter: blur(4px);
+            border: 1px solid var(--border-glass);
+            color: var(--aura-mint-glow);
+            font-family: var(--font-mono);
+            font-size: 0.56rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            padding: 2px 7px;
+            border-radius: 5px;
+            z-index: 2;
+        }
+
+        .photo-title-label {
+            font-size: 0.77rem;
+            font-weight: 700;
+            color: var(--aura-white-pure);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            display: block;
+            width: 100%;
+            padding: 1px 2px 0;
+        }
+
+        /* ==========================================================================
+           12. UBICACIÓN Y MAPA INTERACTIVO (PUERTO IGUAZÚ)
+           ========================================================================== */
+        .cell-wide-navigation {
+            background: linear-gradient(145deg, rgba(4, 92, 54, 0.9) 0%, rgba(1, 43, 25, 0.95) 100%);
+            border: 1.5px solid var(--border-glass);
+            border-radius: 24px;
+            color: #FFFFFF;
+            padding: 18px 18px 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            box-shadow: var(--shadow-card);
+            width: 100%;
+        }
+
+        .location-header-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .location-badge-pill {
+            background: rgba(41, 214, 134, 0.18);
+            border: 1px solid var(--aura-mint-glow);
+            color: var(--aura-mint-glow);
+            padding: 3px 10px;
+            border-radius: 999px;
+            font-family: var(--font-mono);
+            font-size: 0.68rem;
+            font-weight: 800;
+            text-transform: uppercase;
+        }
+
+        .location-venue-title {
+            font-family: var(--font-display);
+            font-size: 1.55rem;
+            font-weight: 800;
+            color: #FFFFFF;
+        }
+
+        .location-address-desc {
+            font-size: 0.80rem;
+            color: var(--aura-text-muted);
+            line-height: 1.4;
+            font-weight: 500;
+        }
+
+        .location-address-desc strong {
+            color: #FFFFFF;
+            font-weight: 700;
+        }
+
+        .map-frame-box {
+            width: 100%;
+            height: 220px;
+            border-radius: 16px;
+            overflow: hidden;
+            border: 1.5px solid var(--border-glass);
+            background: #012B19;
+        }
+
+        #auraMap {
+            width: 100%;
+            height: 100%;
+            z-index: 5;
+        }
+
+        .map-hours-pill-strip {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid var(--border-glass);
+            border-radius: 12px;
+            padding: 9px 12px;
+            font-size: 0.74rem;
+            color: #FFFFFF;
+            font-family: var(--font-mono);
+            font-weight: 700;
+        }
+
+        /* ==========================================================================
+           13. CAJÓN MODAL INTERACTIVO: PELOTERO LIBRE ($12.000)
+           ========================================================================== */
+        .modal-drawer-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(1, 35, 20, 0.88);
+            backdrop-filter: blur(14px);
+            -webkit-backdrop-filter: blur(14px);
+            z-index: 99999;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 16px;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.28s ease;
+        }
+
+        .modal-drawer-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .drawer-dialog-card {
+            background: #033D23;
+            border: 2px solid var(--aura-mint-glow);
+            border-radius: 26px;
+            max-width: 440px;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+            padding: 24px 20px;
+            box-shadow: 0 25px 60px rgba(0,0,0,0.6);
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+            position: relative;
+            transform: scale(0.95);
+            transition: transform 0.28s var(--spring);
+            color: var(--aura-white-pure);
+        }
+
+        .modal-drawer-overlay.active .drawer-dialog-card {
+            transform: scale(1);
+        }
+
+        .btn-close-drawer {
+            position: absolute;
+            top: 14px; right: 14px;
+            width: 32px; height: 32px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.12);
+            border: 1px solid var(--border-glass);
+            color: #FFFFFF;
+            font-size: 15px;
+            font-weight: 800;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .btn-close-drawer:hover {
+            background: var(--aura-mint-glow);
+            color: var(--aura-forest-midnight);
+        }
+
+        .drawer-heading-box h3 {
+            font-family: var(--font-display);
+            font-size: 1.55rem;
+            color: var(--aura-mint-glow);
+            font-weight: 800;
+        }
+
+        .drawer-heading-box p {
+            font-size: 0.80rem;
+            color: var(--aura-text-muted);
+            margin-top: 4px;
+        }
+
+        .pelotero-price-tag {
+            background: rgba(251, 191, 36, 0.16);
+            border: 1.5px solid var(--aura-gold-star);
+            border-radius: 16px;
+            padding: 12px;
+            text-align: center;
+        }
+
+        .pelotero-price-amount {
+            font-family: var(--font-display);
+            font-size: 1.75rem;
+            font-weight: 900;
+            color: var(--aura-gold-star);
+        }
+
+        .pelotero-rules-list {
+            display: flex;
+            flex-direction: column;
+            gap: 7px;
+            font-size: 0.80rem;
+            color: var(--aura-white-soft);
+        }
+
+        .pelotero-rule-item {
+            background: rgba(255,255,255,0.06);
+            border: 1px solid var(--border-glass);
+            padding: 8px 12px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        /* ==========================================================================
+           14. LIGHTBOX FULLSCREEN
+           ========================================================================== */
+        .lightbox-modal {
+            position: fixed;
+            inset: 0;
+            background: rgba(1, 35, 20, 0.95);
+            backdrop-filter: blur(14px);
+            z-index: 999999;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 16px;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.25s ease;
+        }
+
+        .lightbox-modal.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .lightbox-box {
+            position: relative;
+            max-width: 500px;
+            width: 100%;
+            background: #02482A;
+            border: 2px solid var(--aura-mint-glow);
+            border-radius: 24px;
+            overflow: hidden;
+            box-shadow: 0 25px 60px rgba(0, 0, 0, 0.6);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .lightbox-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px 18px;
+            background: #012B19;
+            border-bottom: 1px solid var(--border-glass);
+        }
+
+        .lightbox-counter {
+            font-family: var(--font-mono);
+            font-size: 0.76rem;
+            font-weight: 800;
+            color: var(--aura-mint-glow);
+        }
+
+        .lightbox-img-stage {
+            width: 100%;
+            height: 60vh;
+            max-height: 480px;
+            background: #011E12;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            padding: 10px;
+        }
+
+        .lightbox-img-stage img, .lightbox-img-stage video {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+            border-radius: 14px;
+        }
+
+        .lb-arrow-btn {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 40px; height: 40px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.95);
+            border: 2px solid var(--aura-forest-deep);
+            color: var(--aura-forest-midnight);
+            font-size: 22px;
+            font-weight: 900;
+            cursor: pointer;
+            z-index: 10;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+        }
+
+        .lb-arrow-btn.prev { left: 12px; }
+        .lb-arrow-btn.next { right: 12px; }
+
+        .lightbox-caption-bar {
+            padding: 14px 18px;
+            background: #02482A;
+            font-family: var(--font-display);
+            font-size: 0.90rem;
+            font-weight: 800;
+            color: #FFFFFF;
+            text-align: center;
+        }
+
+        /* ==========================================================================
+           15. REDES SOCIALES & BOTÓN FLOTANTE SMART SCROLL
+           ========================================================================== */
+        .social-network-bar {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            margin-top: 4px;
+        }
+
+        .social-circle-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 44px; height: 44px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.10);
+            border: 1.5px solid var(--border-glass);
+            color: #FFFFFF;
+            text-decoration: none;
+            box-shadow: var(--shadow-card);
+            transition: all 0.22s var(--spring);
+        }
+
+        .social-circle-btn:hover {
+            transform: translateY(-2.5px);
+            background: var(--aura-mint-glow);
+            color: var(--aura-forest-midnight);
+            border-color: var(--aura-mint-glow);
+        }
+
+        .social-circle-btn svg { width: 18px; height: 18px; fill: currentColor; }
+
+        .floating-pin-portal {
+            position: fixed;
+            bottom: calc(18px + env(safe-area-inset-bottom, 0px));
+            right: 14px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            z-index: 999;
+            text-decoration: none;
+            opacity: 0;
+            pointer-events: none;
+            transform: translateY(22px);
+            transition: opacity 0.3s ease, transform 0.3s var(--spring);
+        }
+
+        .floating-pin-portal.is-visible {
+            opacity: 1;
+            pointer-events: auto;
+            transform: translateY(0);
+        }
+
+        .floating-pill-caption {
+            background: #012B19;
+            color: #FFFFFF;
+            font-family: var(--font-mono);
+            font-size: 0.72rem;
+            font-weight: 800;
+            padding: 8px 14px;
+            border-radius: 999px;
+            border: 1.5px solid var(--aura-mint-glow);
+            box-shadow: 0 6px 18px rgba(0,0,0,0.4);
+            letter-spacing: 0.06em;
+            text-transform: uppercase;
+        }
+
+        .floating-circle-glyph {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            background: #25D366;
+            border: 2px solid #FFFFFF;
+            color: #FFFFFF;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 6px 18px rgba(37, 211, 102, 0.45);
+            transition: transform 0.25s var(--spring);
+        }
+
+        .floating-pin-portal:hover .floating-circle-glyph {
+            transform: scale(1.08) translateY(-2px);
+        }
+
+        .floating-circle-glyph svg {
+            width: 25px; height: 25px; fill: #FFFFFF;
+        }
+
+        /* ==========================================================================
+           16. FOOTER INSTITUCIONAL
+           ========================================================================== */
+        .footer-institutional-monument {
+            margin-top: 10px;
+            padding-top: 20px;
+            border-top: 1.5px dashed var(--border-glass);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            gap: 8px;
+            width: 100%;
+        }
+
+        .footer-brand-title {
+            font-family: var(--font-display);
+            font-size: 1.45rem;
+            font-weight: 900;
+            color: var(--aura-white-pure);
+        }
+
+        .footer-address-caption {
+            font-size: 0.77rem;
+            color: var(--aura-text-muted);
+            line-height: 1.5;
+            font-weight: 500;
+            max-width: 380px;
+        }
+
+        .footer-legal-copy {
+            font-family: var(--font-mono);
+            font-size: 0.65rem;
+            color: var(--aura-mint-glow);
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- 1. PATRÓN DINÁMICO & SPOTLIGHT CÉLESTE/MENTA -->
+    <div class="aura-ambient-canvas" aria-hidden="true"></div>
+    <div class="aura-spotlight-veil" aria-hidden="true"></div>
+
+    <!-- 2. MARQUESINA INSTITUCIONAL SUPERIOR -->
+    <div class="marquee-strip-flow" aria-label="Novedades de AURA Eventos">
+        <div class="marquee-track-unit">
+            <span>✨ AURA EVENTOS PUERTO IGUAZÚ <i class="bullet-star">★</i></span>
+            <span>CUMPLEAÑOS INFANTILES TEMÁTICOS <i class="bullet-star">★</i></span>
+            <span>PELOTERO LIBRE $12.000 CON MERIENDA <i class="bullet-star">★</i></span>
+            <span>SALÓN 100% CLIMATIZADO <i class="bullet-star">★</i></span>
+            <span>SECTOR KIDS &amp; JUEGOS INTEGRADOS <i class="bullet-star">★</i></span>
+            <span>AV. REPÚBLICA ARGENTINA 135 <i class="bullet-star">★</i></span>
+            <span>AGENDA 2026 / 2027 ABIERTA <i class="bullet-star">★</i></span>
+            <span>✨ AURA EVENTOS PUERTO IGUAZÚ <i class="bullet-star">★</i></span>
+            <span>CUMPLEAÑOS INFANTILES TEMÁTICOS <i class="bullet-star">★</i></span>
+        </div>
+    </div>
+
+    <!-- 3. SHELL PRINCIPAL MOBILE -->
+    <main class="master-hub-shell">
+
+        <!-- BARRA INSTITUCIONAL SUPERIOR -->
+        <header class="top-institutional-bar">
+            <a href="https://www.instagram.com/auraeventosig/" target="_blank" rel="noopener noreferrer" class="pill-instagram-btn" onclick="playTap()">
+                <svg viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
+                <span class="pill-instagram-text">@auraeventosig</span>
+            </a>
+
+            <div class="badge-live-schedule">
+                <span class="beacon-spark"></span>
+                <span>Vie a Dom · 17 a 21 hs</span>
+            </div>
+        </header>
+
+        <!-- 4. HERO: LOGO OFICIAL SUELTO CON MÁXIMO PODERÍO & JERARQUÍA -->
+        <section class="hero-logo-monument">
+            <div class="logo-free-stage" onclick="playTap()" title="AURA Eventos Oficial">
+                
+                <!-- SVG ORIGINAL EXACTO PROVISTO -->
+                <svg id="Layer_1" data-name="Layer 1" class="logo-svg-master" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1528.7 591.87">
+                    <defs>
+                        <style>
+                            .cls-1 { fill: #ffffff; stroke-width: 0px; }
+                        </style>
+                    </defs>
+                    <path class="cls-1" d="M833.51.73c2.79,0,4.76,0,6.74,0,51.49,0,102.98-.14,154.47.07,25.95.1,50.65,5.75,72.83,19.75,27.89,17.6,43.45,43.85,49.47,75.54,7.49,39.44,2.01,76.96-20.61,111.03-15.45,23.27-37.59,37.37-63.78,45.49-11.39,3.53-23.12,5.97-34.99,8.98.38.64.77,1.5,1.34,2.23,25.24,32.07,50.26,64.32,75.85,96.11,12.04,14.96,25.63,28.46,42.71,37.97,17.57,9.78,36.22,13.57,56.27,12.05,6.62-.5,13.68.24,20.04,2.1,8.4,2.46,12.97,9.28,13.51,18.04.54,8.69-3.95,15.15-11.27,19.17-4.44,2.44-9.49,4.32-14.49,5.12-36.51,5.81-69.73-2.41-99.81-23.89-23.85-17.04-43.29-38.48-61.28-61.3-27.02-34.28-53.76-68.77-80.5-103.27-1.95-2.52-3.87-3.52-7.03-3.49-15.15.16-30.3.07-46.34.07,0,2.14,0,4.05,0,5.95,0,31.99,0,63.99-.02,95.98,0,13.05-6.25,21.23-18.87,24.85-11.94,3.42-25.47-1.13-31.2-11.02-1.75-3.02-2.92-6.88-2.92-10.35-.14-120.64-.11-241.28-.11-361.92,0-1.48,0-2.95,0-5.24ZM886.91,222.71c2.03,0,3.66,0,5.29,0,30.98-.05,61.96-.13,92.94-.12,27.78.01,49.52-12.11,65.73-33.92,18.31-24.65,22.29-52.93,18.31-82.68-2.49-18.67-9.35-35.25-23.8-48.18-14.98-13.4-32.87-18.66-52.4-18.8-33.64-.24-67.29,0-100.93.06-1.62,0-3.24.18-5.15.3v183.35Z"/>
+                    <path class="cls-1" d="M481.66,136.8c0,36.49-.35,72.98.16,109.46.23,16.26,4.4,31.97,11.38,46.77,11.54,24.47,31.14,39.6,56.59,47.13,30.36,8.97,61.2,9.53,91.85,1.71,40.22-10.26,63.33-36.97,70.8-77.29,2.11-11.4,3.18-23.16,3.23-34.77.3-67.15.15-134.31.16-201.47,0-13.91,6.29-22.58,19.89-25.21,5.63-1.09,12.08-.64,17.62.97,10.59,3.08,15.96,11.1,15.99,22.13.1,41.33.11,82.65.02,123.98-.07,30.16.38,60.34-.74,90.46-1.09,29.47-7.8,57.8-24,83.04-20.29,31.6-49.22,51.77-85.25,61.12-44.87,11.64-89.99,11.55-133.89-3.95-54.23-19.15-84.96-58.93-94.48-115.11-2.44-14.38-3.37-29.16-3.45-43.76-.35-64.15.54-128.32-.52-192.46-.35-21.56,20.94-30.71,35.48-26.48,12.66,3.68,19.07,12.06,19.06,25.23-.04,36.16-.01,72.32-.01,108.48.04,0,.08,0,.12,0Z"/>
+                    <path class="cls-1" d="M413.7,394.91c-19.44,0-37.08.1-54.71-.17-1.51-.02-3.55-2.17-4.39-3.82-10.64-20.75-21.1-41.59-31.61-62.4-4.73-9.37-9.31-18.81-14.28-28.05-.91-1.69-3.23-3.43-5.1-3.69-90.05-12.42-166.53,15.04-230.45,78.93-5.05,5.05-9.23,10.95-14.01,16.28-1.19,1.33-3.17,2.76-4.79,2.78-17.66.18-35.32.08-52.98.04-.27,0-.54-.32-1.38-.84C68.87,262.91,135.9,130.86,205.99.42c.69-.08,1.37-.17,2.06-.25,68.34,131.18,136.68,262.35,205.65,394.74ZM104.86,298.09c.43.48.87.96,1.3,1.44,54.96-34.15,115.98-45.33,180.38-47.6-26.74-51.8-53.01-102.69-80.02-155.01-34.35,67.97-68,134.57-101.66,201.18Z"/>
+                    <path class="cls-1" d="M1326.57.23c69.36,130.15,135.49,261.95,202.13,394.22-2.07.18-3.48.39-4.89.4-16,.08-31.99.21-47.99.08-1.83-.02-4.34-1.05-5.38-2.46-19.24-26.06-43.75-46.1-71.5-62.26-43.15-25.13-89.57-38.3-139.77-36.5-10.13.36-20.22,1.96-30.34,2.8-3.21.27-4.96,1.67-6.37,4.55-10.55,21.73-21.34,43.34-31.87,65.08-1.5,3.09-3.13,4.42-6.71,4.37-15.99-.21-31.99-.08-47.99-.11-1.43,0-2.85-.17-5.37-.33,64.74-123.83,129.11-246.96,193.49-370.08.85.08,1.69.16,2.54.23ZM1325.21,97.11c-26.8,52-53.06,102.95-79.71,154.65,64.04,2.6,124.77,13.55,179.75,47.29-31.2-68.24-65.92-134.3-100.05-201.94Z"/>
+                    <path class="cls-1" d="M1117.97,590.43c-27.76-.13-50.29-22.71-50.17-50.29.12-27.17,23.37-49.88,50.94-49.77,28.15.11,51.06,23.02,50.83,50.82-.22,26.75-23.92,49.36-51.6,49.23ZM1119.12,506.44c-19.42-.05-34.09,14.54-34.22,34.03-.12,18.64,14.9,33.71,33.54,33.65,18.66-.07,33.93-15.42,33.94-34.12,0-18.18-15.19-33.51-33.26-33.55Z"/>
+                    <path class="cls-1" d="M796.38,591.3c-22.76-21.8-44.36-42.5-66.72-63.92v60.86h-16.29v-98.85c22.4,21.37,43.95,41.94,66.47,63.43v-60.47h16.54v98.95Z"/>
+                    <path class="cls-1" d="M543.2,492.39h58.26v14.27h-41.27v22.55h39.96v14.2h-39.86v30.09h41.23v14.73c-1.65.12-3.24.32-4.82.32-16.33.08-32.65.1-48.98.22-2.99.02-4.96-.2-4.94-4.17.15-29.82.1-59.64.12-89.46,0-.8.16-1.6.29-2.75Z"/>
+                    <path class="cls-1" d="M192.66,492.31h58.01v14.33h-40.73v22.5h39.39v14.25h-39.46v30.12h40.78v14.81c-1.73.1-3.49.3-5.25.31-15.83.04-31.66-.07-47.49.16-4.15.06-5.34-1.23-5.31-5.38.16-28.33.07-56.65.07-84.98,0-1.81,0-3.61,0-6.11Z"/>
+                    <path class="cls-1" d="M1330.49,507.36c-4.04,2.44-8.11,4.9-12.43,7.51-4.28-6.26-9.77-9.77-17.3-9.56-6.82.19-11.38,3.1-12.69,8.37-1.34,5.39,1.14,10.09,7.46,13.1,6.46,3.08,13.13,5.7,19.66,8.64,12.66,5.71,19.28,16.13,18.04,28.2-1.35,13.15-10.02,22.8-23.39,26.02-19.18,4.61-37.46-4.5-43.16-21.93,4.48-2.25,9.03-4.53,13.94-6.99,1.17,1.99,2.21,3.83,3.33,5.62,4.94,7.87,13.66,11.09,22.54,8.32,4.98-1.55,8.5-4.51,9.31-9.96.81-5.44-.72-10.14-5.54-12.93-5.17-2.99-10.69-5.38-16.07-8.01-3.89-1.9-8.02-3.39-11.65-5.7-16.83-10.72-15.85-34.32,1.69-43.9,16.6-9.07,39.01-2.82,46.27,13.19Z"/>
+                    <path class="cls-1" d="M442.89,492.08c-15.39,33.54-30.28,65.99-45.79,99.78-15.6-33.75-30.63-66.26-46.08-99.68,6.23,0,11.65-.33,16.98.22,1.41.15,2.92,2.83,3.73,4.64,7.67,17.15,15.2,34.36,22.78,51.54.73,1.64,1.52,3.26,2.53,5.4,8.11-18.28,16.02-35.99,23.82-53.74,3.56-8.1,3.46-8.14,12.56-8.16,2.8,0,5.61,0,9.46,0Z"/>
+                    <path class="cls-1" d="M946.72,588.41h-16.81v-81.57h-26.1v-14.35h69.24v14.33h-26.34v81.59Z"/>
+                </svg>
+
+                <!-- Reflejo suave de cristal en el piso -->
+                <svg class="logo-glass-reflection" viewBox="0 0 1528.7 591.87" aria-hidden="true">
+                    <use href="#Layer_1"/>
+                </svg>
+            </div>
+        </section>
+
+        <!-- 5. RECUADRO COMPACTO Y ÁUREO (SÍNTESIS HUMANA) -->
+        <section class="hero-compact-card">
+            <div class="hero-title-edition">
+                ✨ Antes Abracadabra · Hoy AURA Eventos
+            </div>
+
+            <h1 class="hero-statement-lead">
+                Un espacio renovado para <em>celebrar en grande</em> en Puerto Iguazú.
+            </h1>
+
+            <p class="hero-tagline-quote">
+                Pensado para que ellos hagan lo más importante: <strong>jugar, reírse y divertirse muchísimo</strong>. Y para que toda la familia disfrute sin preocuparse por los detalles.
+            </p>
+
+            <div class="merits-wave-strip">
+                <span class="merit-wave-pill">🎈 Pelotero Libre</span>
+                <span class="merit-wave-pill">❄️ 100% Climatizado</span>
+                <span class="merit-wave-pill">🧸 Temáticas</span>
+                <span class="merit-wave-pill">🥳 Sector Kids</span>
+            </div>
+        </section>
+
+        <!-- 6. HERO CTA DIRECTO A WHATSAPP: "QUIERO FESTEJAR" -->
+        <a id="heroWhatsAppBtn" href="https://wa.me/5493757627080?text=QUIERO%20FESTEJAR%20%F0%9F%8E%88%20Quisiera%20consultar%20disponibilidad%20y%20promos%20para%20un%20festejo%20en%20AURA." target="_blank" rel="noopener noreferrer" class="card-hero-whatsapp" onclick="playTap()">
+            <div class="hero-wpp-content">
+                <span class="hero-wpp-tag"><i class="beacon-spark"></i> Puerto Iguazú · Atención Inmediata</span>
+                <h2 class="hero-wpp-title">QUIERO FESTEJAR</h2>
+                <span class="hero-wpp-sub">Escribinos al 3757 627080 por fechas &amp; cotizaciones</span>
+            </div>
+            <div class="hero-wpp-circle-badge">
+                <svg viewBox="0 0 24 24"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z"/></svg>
+            </div>
+        </a>
+
+        <!-- 7. GRILLA BENTO MORFOLÓGICA AURA -->
+        <section class="aura-bento-grid">
+
+            <!-- 1. DÍA DE PELOTERO LIBRE ($12.000) -->
+            <article class="bento-cell-card cell-pelotero-glow" onclick="openPeloteroDrawer()">
+                <div class="cell-top-meta">
+                    <span class="cell-chip-tag">$12.000 · Entrada</span>
+                    <span style="font-size: 1.25rem;">🍿</span>
+                </div>
+                <div>
+                    <h3 class="cell-poster-headline">Días de Pelotero</h3>
+                    <p class="cell-body-caption">Horas libres de juego + Pochoclo, gaseosa y algodón de regalo.</p>
+                </div>
+            </article>
+
+            <!-- 2. CUMPLEAÑOS TEMÁTICOS -->
+            <article class="bento-cell-card" onclick="filterGalleryByCategory('Temáticas')">
+                <div class="cell-top-meta">
+                    <span class="cell-chip-tag">Ambientaciones</span>
+                    <span style="font-size: 1.25rem;">🎨</span>
+                </div>
+                <div>
+                    <h3 class="cell-poster-headline">Cumples Soñados</h3>
+                    <p class="cell-body-caption">Toy Story, K-Pop, Hello Kitty, Mariposas y montajes a medida.</p>
+                </div>
+            </article>
+
+            <!-- 3. FULL WIDTH: INFRAESTRUCTURA & CONFORT FAMILIAR -->
+            <article class="bento-cell-card cell-full-infra" onclick="filterGalleryByCategory('El Salón')">
+                <div style="flex:1;">
+                    <div class="cell-top-meta" style="margin-bottom: 2px;">
+                        <span class="cell-chip-tag">100% Climatizado · Confort Premium</span>
+                    </div>
+                    <h3 class="cell-poster-headline">Salón Amplio &amp; Versátil</h3>
+                    <p class="cell-body-caption">Mesas vestidas, sillas Tiffany, cocina equipada, parrillero y espacio Kids.</p>
+                </div>
+                <span style="font-size: 2.1rem; filter: drop-shadow(0 4px 10px rgba(0,0,0,0.3));">✨</span>
+            </article>
+
+            <!-- 4. TALLERES & EXPERIENCIAS -->
+            <article class="bento-cell-card" onclick="filterGalleryByCategory('Talleres')">
+                <div class="cell-top-meta">
+                    <span class="cell-chip-tag">Creatividad</span>
+                    <span style="font-size: 1.25rem;">🐣</span>
+                </div>
+                <div>
+                    <h3 class="cell-poster-headline">Talleres &amp; Arte</h3>
+                    <p class="cell-body-caption">Taller de Pascua, pintura, chocolatería y tardes creativas.</p>
+                </div>
+            </article>
+
+            <!-- 5. UBICACIÓN DIRECTA -->
+            <a href="https://maps.google.com/?q=Av.+Republica+Argentina+135+Puerto+Iguazu" target="_blank" rel="noopener noreferrer" class="bento-cell-card" onclick="playTap()">
+                <div class="cell-top-meta">
+                    <span class="cell-chip-tag">Encuentro</span>
+                    <span style="font-size: 1.25rem;">📍</span>
+                </div>
+                <div>
+                    <h3 class="cell-poster-headline">Av. Rep. Argentina 135</h3>
+                    <p class="cell-body-caption">Puerto Iguazú, Misiones. Tocá para abrir ubicación directa.</p>
+                </div>
+            </a>
+
+        </section>
+
+        <!-- 8. REELS Y MOMENTOS EN VIDEO (FOTOS / PRELOAD METADATA) -->
+        <section class="showcase-enclosure-glass">
+            <div class="enclosure-header-row">
+                <span class="enclosure-title-main">Momentos AURA</span>
+                <span class="enclosure-badge-right">En Vivo</span>
+            </div>
+
+            <div class="carousel-inner-track">
+
+                <!-- VIDEO 1: PELOTERO -->
+                <div class="reel-scroll-card" onclick="openLightboxFromDirect('https://images.unsplash.com/photo-1502086223501-7ea6ecd79368?w=900&auto=format&fit=crop&q=80', 'Así se vive un día de Pelotero en AURA 💚', false)">
+                    <span class="reel-scroll-tag">Pelotero</span>
+                    <img src="https://images.unsplash.com/photo-1502086223501-7ea6ecd79368?w=500&auto=format&fit=crop&q=80" alt="Pelotero Libre AURA" loading="lazy" onerror="handleMediaFallback(this)">
+                    <div class="reel-scroll-caption">Pelotero Libre &amp; Risas</div>
+                </div>
+
+                <!-- VIDEO 2: CUMPLE ENZO TOY STORY -->
+                <div class="reel-scroll-card" onclick="openLightboxFromDirect('https://images.unsplash.com/photo-1513151233558-d860c5398176?w=900&auto=format&fit=crop&q=80', 'Cumple de Enzo 🧸 Toy Story 2 Añitos', false)">
+                    <span class="reel-scroll-tag">Toy Story</span>
+                    <img src="https://images.unsplash.com/photo-1513151233558-d860c5398176?w=500&auto=format&fit=crop&q=80" alt="Cumple Toy Story" loading="lazy" onerror="handleMediaFallback(this)">
+                    <div class="reel-scroll-caption">Cumple de Enzo</div>
+                </div>
+
+                <!-- VIDEO 3: PRIMER AÑITO ARYA -->
+                <div class="reel-scroll-card" onclick="openLightboxFromDirect('https://images.unsplash.com/photo-1530103862676-de8c9debad1d?w=900&auto=format&fit=crop&q=80', 'Primer Añito de Arya 🦋 Magia Pastel', false)">
+                    <span class="reel-scroll-tag">Primer Añito</span>
+                    <img src="https://images.unsplash.com/photo-1530103862676-de8c9debad1d?w=500&auto=format&fit=crop&q=80" alt="Primer Añito Arya" loading="lazy" onerror="handleMediaFallback(this)">
+                    <div class="reel-scroll-caption">Arya 1er Añito</div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- 9. CARTA & ESPACIOS (EXACTAMENTE FOTOS CURADAS ULTRA-RÁPIDAS) -->
+        <section class="showcase-enclosure-glass" style="background: rgba(2, 72, 42, 0.85);">
+            <div class="enclosure-header-row">
+                <span class="enclosure-title-main">Nuestros Festejos</span>
+                <button class="btn-shuffle-reload" onclick="reshuffleGallery()">
+                    <span>Mezclar fotos 🔀</span>
+                </button>
+            </div>
+
+            <!-- FILTROS DE CATEGORÍA -->
+            <div class="category-filter-tabs">
+                <button class="cat-tab-btn active" onclick="filterGalleryByCategory('all')">✨ Todo</button>
+                <button class="cat-tab-btn" onclick="filterGalleryByCategory('Cumpleaños')">🎈 Cumples</button>
+                <button class="cat-tab-btn" onclick="filterGalleryByCategory('Temáticas')">🧸 Temáticas</button>
+                <button class="cat-tab-btn" onclick="filterGalleryByCategory('Pelotero')">🎪 Pelotero</button>
+                <button class="cat-tab-btn" onclick="filterGalleryByCategory('El Salón')">🏡 El Salón</button>
+            </div>
+
+            <!-- CONTENEDOR GRID DINÁMICO BLINDADO -->
+            <div class="gallery-cards-grid" id="galleryGridContainer">
+                <!-- Inyectado por JavaScript al instante -->
+            </div>
+        </section>
+
+        <!-- 10. HORARIOS & DÍAS DE ATENCIÓN INFORMADOS -->
+        <article class="cell-wide-navigation">
+            <div class="location-header-row">
+                <span class="location-badge-pill">Días &amp; Horarios</span>
+                <span style="font-family: var(--font-mono); font-size: 0.72rem; color: var(--aura-gold-star); font-weight: 800;">PUERTO IGUAZÚ</span>
+            </div>
+
+            <div>
+                <h3 class="location-venue-title">Viernes, Sábado y Domingo</h3>
+                <p class="location-address-desc">
+                    Abierto para Pelotero Libre y celebraciones de <strong>17:00 a 21:00 hs</strong>.
+                </p>
+            </div>
+
+            <div class="map-hours-pill-strip">
+                <span>⏰ ATENCIÓN: 17 A 21 HS</span>
+                <span>📲 RESERVAS: 3757 627080</span>
+            </div>
+        </article>
+
+        <!-- 11. UBICACIÓN Y MAPA LEAFLET INTERACTIVO (PUERTO IGUAZÚ) -->
+        <article class="cell-wide-navigation" style="background: #012B19;">
+            <div class="location-header-row">
+                <span class="location-badge-pill">Punto de Encuentro</span>
+                <a href="https://maps.google.com/?q=Av.+Republica+Argentina+135+Puerto+Iguazu" target="_blank" rel="noopener noreferrer" style="color:var(--aura-mint-glow); font-family:var(--font-mono); font-size:0.72rem; font-weight:800; text-decoration:none; text-transform:uppercase;">
+                    Abrir Mapa ↗
+                </a>
+            </div>
+
+            <div>
+                <h3 class="location-venue-title">Av. República Argentina 135</h3>
+                <p class="location-address-desc">
+                    N3370 Puerto Iguazú, Provincia de Misiones, Argentina.
+                </p>
+            </div>
+
+            <div class="map-frame-box">
+                <div id="auraMap"></div>
+            </div>
+        </article>
+
+        <!-- REDES SOCIALES Y CONTACTO -->
+        <nav class="social-network-bar" aria-label="Canales Oficiales">
+            <a href="https://www.instagram.com/auraeventosig/" target="_blank" rel="noopener noreferrer" class="social-circle-btn" aria-label="Instagram" onclick="playTap()">
+                <svg viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
+            </a>
+            <a href="https://www.facebook.com/Auraeventosig" target="_blank" rel="noopener noreferrer" class="social-circle-btn" aria-label="Facebook" onclick="playTap()">
+                <svg viewBox="0 0 24 24"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+            </a>
+            <a href="https://wa.me/5493757627080" target="_blank" rel="noopener noreferrer" class="social-circle-btn" aria-label="WhatsApp" onclick="playTap()">
+                <svg viewBox="0 0 24 24"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z"/></svg>
+            </a>
+            <a href="tel:03757627080" class="social-circle-btn" aria-label="Llamar" onclick="playTap()">
+                <svg viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+            </a>
+        </nav>
+
+        <!-- FOOTER INSTITUCIONAL -->
+        <footer class="footer-institutional-monument">
+            <h4 class="footer-brand-title">AURA Eventos</h4>
+            <p class="footer-address-caption">
+                Av. República Argentina 135, Puerto Iguazú, Misiones.<br>
+                Salón infantil, pelotero libre, temáticas soñadas y momentos únicos.
+            </p>
+            <p class="footer-legal-copy">
+                © 2026 AURA EVENTOS · PUERTO IGUAZÚ
+            </p>
+        </footer>
+
+    </main>
+
+    <!-- BOTÓN FLOTANTE SMART SCROLL WHATSAPP -->
+    <a id="floatingConcierge" href="https://wa.me/5493757627080?text=QUIERO%20FESTEJAR" class="floating-pin-portal" target="_blank" rel="noopener noreferrer" aria-label="Escribir por WhatsApp" onclick="playTap()">
+        <span class="floating-pill-caption">QUIERO FESTEJAR</span>
+        <div class="floating-circle-glyph">
+            <svg viewBox="0 0 24 24"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z"/></svg>
+        </div>
+    </a>
+
+    <!-- CAJÓN MODAL INTERACTIVO: PELOTERO LIBRE -->
+    <div class="modal-drawer-overlay" id="peloteroDrawer" onclick="closePeloteroDrawer(event)">
+        <div class="drawer-dialog-card" onclick="event.stopPropagation()">
+            <button class="btn-close-drawer" onclick="closePeloteroDrawer(event)">✕</button>
+            <div class="drawer-heading-box">
+                <h3>🎈 Día de Pelotero Libre</h3>
+                <p>Tardes de juego, risas y diversión para los más peques en AURA.</p>
+            </div>
+
+            <div class="pelotero-price-tag">
+                <span style="font-family: var(--font-mono); font-size: 0.70rem; text-transform: uppercase; color: var(--aura-white-soft);">Entrada General</span>
+                <div class="pelotero-price-amount">$12.000</div>
+                <span style="font-size: 0.74rem; color: #FFF; font-weight: 700;">¡Horas Libres de Diversión!</span>
+            </div>
+
+            <div class="pelotero-rules-list">
+                <div class="pelotero-rule-item">🍿 <strong>Incluye Pochoclo</strong> recién hecho.</div>
+                <div class="pelotero-rule-item">🥤 <strong>Vaso de Gaseosa</strong> fresco.</div>
+                <div class="pelotero-rule-item">🍭 <strong>Algodón de Azúcar</strong> de regalo.</div>
+                <div class="pelotero-rule-item">👨‍👩‍👧 <strong>2 Acompañantes gratis</strong> por niño.</div>
+                <div class="pelotero-rule-item">🎟️ Adulto extra: $7.000.</div>
+                <div class="pelotero-rule-item">⚠️ No se permite el ingreso con comidas ni bebidas externas.</div>
+            </div>
+
+            <a href="https://wa.me/5493757627080?text=QUIERO%20FESTEJAR%20%F0%9F%8E%88%20Quisiera%20consultar%20por%20los%20D%C3%ADas%20de%20Pelotero%20Libre." target="_blank" rel="noopener noreferrer" style="background:#25D366; color:#FFF; text-decoration:none; padding:13px; border-radius:14px; text-align:center; font-weight:800; text-transform:uppercase; letter-spacing:0.04em;">
+                Consultar por WhatsApp
+            </a>
+        </div>
+    </div>
+
+    <!-- LIGHTBOX FULLSCREEN -->
+    <div class="lightbox-modal" id="galleryLightbox" onclick="closeLightbox(event)">
+        <div class="lightbox-box" onclick="event.stopPropagation()">
+            <div class="lightbox-header">
+                <span class="lightbox-counter" id="lbCounter">1 / 1</span>
+                <button class="btn-close-drawer" onclick="closeLightbox(event)">✕</button>
+            </div>
+            <div class="lightbox-img-stage" id="lbStage">
+                <button class="lb-arrow-btn prev" onclick="navLightbox(-1)">‹</button>
+                <div id="lbMediaContainer" style="width:100%; height:100%; display:flex; align-items:center; justify-content:center;">
+                    <img id="lbMainImg" src="" alt="AURA Eventos">
+                </div>
+                <button class="lb-arrow-btn next" onclick="navLightbox(1)">›</button>
+            </div>
+            <div class="lightbox-caption-bar" id="lbCaption">AURA Eventos Puerto Iguazú</div>
+        </div>
+    </div>
+
+    <!-- CONTROLADORES JAVASCRIPT ULTRA-EFICIENTES -->
+    <script>
+        // ==========================================================================
+        // 1. DATASET DE FOTOS CON FALLBACK RESISTENTE ANTI-ROTURAS
+        // ==========================================================================
+        const VERIFIED_FALLBACK = "https://images.unsplash.com/photo-1513151233558-d860c5398176?w=600&auto=format&fit=crop&q=80";
+
+        const masterCatalog = [
+            { file: "https://images.unsplash.com/photo-1530103862676-de8c9debad1d?w=600&auto=format&fit=crop&q=80", title: "Arya 1er Añito · Mariposas Pastel", cat: "Cumpleaños" },
+            { file: "https://images.unsplash.com/photo-1513151233558-d860c5398176?w=600&auto=format&fit=crop&q=80", title: "Enzo Cumplió 2 · Toy Story", cat: "Temáticas" },
+            { file: "https://images.unsplash.com/photo-1527529482837-4698179dc6ce?w=600&auto=format&fit=crop&q=80", title: "Amira · Cumpleaños K-Pop", cat: "Cumpleaños" },
+            { file: "https://images.unsplash.com/photo-1514525253161-7a46d19cd819?w=600&auto=format&fit=crop&q=80", title: "Martina Cumplió 2 en AURA", cat: "Cumpleaños" },
+            { file: "https://images.unsplash.com/photo-1502086223501-7ea6ecd79368?w=600&auto=format&fit=crop&q=80", title: "Sector Kids & Pelotero Libre", cat: "Pelotero" },
+            { file: "https://images.unsplash.com/photo-1464366400600-7168b8af9bc3?w=600&auto=format&fit=crop&q=80", title: "Salón Climatizado & Mesas Vestidas", cat: "El Salón" },
+            { file: "https://images.unsplash.com/photo-1492684223066-81342ee5ff30?w=600&auto=format&fit=crop&q=80", title: "Guillermina Cumplió 6", cat: "Cumpleaños" },
+            { file: "https://images.unsplash.com/photo-1588195538326-c5b1e9f80a1b?w=600&auto=format&fit=crop&q=80", title: "Taller de Pascua & Chocolatería", cat: "Talleres" }
+        ];
+
+        function handleMediaFallback(imgElement) {
+            imgElement.onerror = null;
+            imgElement.src = VERIFIED_FALLBACK;
+        }
+
+        // ==========================================================================
+        // 2. RENDERIZADOR Y FILTROS DE GALERÍA
+        // ==========================================================================
+        let currentFilter = 'all';
+        let renderedItems = [];
+        let currentLbIndex = 0;
+
+        function shuffle(array) {
+            let copy = [...array];
+            for (let i = copy.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [copy[i], copy[j]] = [copy[j], copy[i]];
+            }
+            return copy;
+        }
+
+        function renderGallery() {
+            const container = document.getElementById('galleryGridContainer');
+            if (!container) return;
+
+            let filtered = currentFilter === 'all' 
+                ? [...masterCatalog] 
+                : masterCatalog.filter(item => item.cat === currentFilter);
+
+            renderedItems = shuffle(filtered);
+            container.innerHTML = '';
+
+            renderedItems.forEach((item, idx) => {
+                const card = document.createElement('div');
+                card.className = 'gallery-photo-card';
+                card.onclick = () => openLightbox(idx);
+
+                card.innerHTML = `
+                    <div class="photo-img-wrap">
+                        <span class="photo-cat-tag">${item.cat}</span>
+                        <img src="${item.file}" alt="${item.title}" fetchpriority="high" decoding="async" onerror="handleMediaFallback(this)">
+                    </div>
+                    <span class="photo-title-label">${item.title}</span>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        function reshuffleGallery() {
+            playTap();
+            renderGallery();
+        }
+
+        function filterGalleryByCategory(category) {
+            playTap();
+            currentFilter = category;
+            document.querySelectorAll('.cat-tab-btn').forEach(btn => {
+                btn.classList.toggle('active', btn.getAttribute('onclick').includes(`'${category}'`));
+            });
+            renderGallery();
+        }
+
+        // ==========================================================================
+        // 3. SMART FLOATING WHATSAPP BUTTON
+        // ==========================================================================
+        function initSmartFloatingWhatsApp() {
+            const heroBtn = document.getElementById('heroWhatsAppBtn');
+            const floatingBtn = document.getElementById('floatingConcierge');
+
+            if (heroBtn && floatingBtn && 'IntersectionObserver' in window) {
+                const observer = new IntersectionObserver((entries) => {
+                    entries.forEach(entry => {
+                        if (entry.isIntersecting) {
+                            floatingBtn.classList.remove('is-visible');
+                        } else {
+                            if (heroBtn.getBoundingClientRect().top < 0) {
+                                floatingBtn.classList.add('is-visible');
+                            } else {
+                                floatingBtn.classList.remove('is-visible');
+                            }
+                        }
+                    });
+                }, { threshold: 0 });
+                observer.observe(heroBtn);
+            }
+        }
+
+        // ==========================================================================
+        // 4. CAJÓN MODAL & LIGHTBOX
+        // ==========================================================================
+        function openPeloteroDrawer() {
+            playTap();
+            document.getElementById('peloteroDrawer').classList.add('active');
+        }
+
+        function closePeloteroDrawer(e) {
+            if (e && e.stopPropagation) e.stopPropagation();
+            document.getElementById('peloteroDrawer').classList.remove('active');
+        }
+
+        const lbModal = document.getElementById('galleryLightbox');
+        const lbCounter = document.getElementById('lbCounter');
+        const lbCaption = document.getElementById('lbCaption');
+        const lbMediaContainer = document.getElementById('lbMediaContainer');
+
+        function openLightbox(index) {
+            playTap();
+            currentLbIndex = index;
+            updateLightbox();
+            lbModal.classList.add('active');
+        }
+
+        function openLightboxFromDirect(path, title, isVideo) {
+            playTap();
+            renderedItems = [{ file: path, title: title, cat: 'Destacado', isVideo: isVideo }];
+            currentLbIndex = 0;
+            updateLightbox();
+            lbModal.classList.add('active');
+        }
+
+        function closeLightbox(e) {
+            if (e && e.stopPropagation) e.stopPropagation();
+            lbModal.classList.remove('active');
+            lbMediaContainer.innerHTML = '';
+        }
+
+        function updateLightbox() {
+            if (!renderedItems[currentLbIndex]) return;
+            const item = renderedItems[currentLbIndex];
+
+            lbCounter.innerText = `${currentLbIndex + 1} / ${renderedItems.length}`;
+            lbCaption.innerText = item.title;
+
+            if (item.isVideo) {
+                lbMediaContainer.innerHTML = `<video src="${item.file}" controls autoplay loop playsinline style="max-width:100%;max-height:100%;border-radius:14px;" onerror="handleMediaFallback(this)"></video>`;
+            } else {
+                lbMediaContainer.innerHTML = `<img src="${item.file}" alt="${item.title}" style="max-width:100%;max-height:100%;object-fit:contain;border-radius:14px;" onerror="handleMediaFallback(this)">`;
+            }
+        }
+
+        function navLightbox(dir) {
+            playTap();
+            currentLbIndex = (currentLbIndex + dir + renderedItems.length) % renderedItems.length;
+            updateLightbox();
+        }
+
+        // ==========================================================================
+        // 5. MAPA LEAFLET INTERACTIVO (PUERTO IGUAZÚ)
+        // ==========================================================================
+        let mapInstance = null;
+        function initAuraMap() {
+            if (mapInstance !== null) return;
+
+            const lat = -25.6033;
+            const lng = -54.5744;
+
+            mapInstance = L.map('auraMap', {
+                center: [lat, lng],
+                zoom: 16,
+                zoomControl: true,
+                scrollWheelZoom: false,
+                touchZoom: true
+            });
+
+            L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}', {
+                attribution: 'Tiles &copy; Esri',
+                maxZoom: 19
+            }).addTo(mapInstance);
+
+            const customPin = L.divIcon({
+                className: 'custom-map-pin',
+                html: `<div style="background:#02482A; color:#FFFFFF; padding:6px 14px; border-radius:16px; font-weight:800; font-size:12px; font-family:'Plus Jakarta Sans',sans-serif; box-shadow:0 4px 16px rgba(0,0,0,0.4); border:2px solid #29D686; white-space:nowrap; display:flex; align-items:center; gap:6px;">✨ AURA Eventos</div>`,
+                iconSize: [120, 32],
+                iconAnchor: [60, 16]
+            });
+
+            L.marker([lat, lng], { icon: customPin }).addTo(mapInstance)
+                .bindPopup("<b style='font-family:serif;font-size:14px;color:#02482A;'>AURA Eventos</b><br>Av. República Argentina 135, Puerto Iguazú")
+                .openPopup();
+        }
+
+        // ==========================================================================
+        // 6. HÁPTICA & MICRO-FÍSICA
+        // ==========================================================================
+        function playTap() {
+            if ('vibrate' in navigator) {
+                try { navigator.vibrate(8); } catch(e) {}
+            }
+        }
+
+        if (window.matchMedia('(hover: hover) and (pointer: fine)').matches) {
+            document.querySelectorAll('.bento-cell-card, .pill-instagram-btn, .card-hero-whatsapp').forEach(card => {
+                card.addEventListener('mousemove', (e) => {
+                    const rect = card.getBoundingClientRect();
+                    const x = e.clientX - rect.left - rect.width / 2;
+                    const y = e.clientY - rect.top - rect.height / 2;
+                    card.style.transform = `translate(${x * 0.02}px, ${y * 0.02 - 3}px)`;
+                });
+                card.addEventListener('mouseleave', () => {
+                    card.style.transform = '';
+                });
+            });
+        }
+
+        // INICIALIZACIÓN AUTOMÁTICA
+        window.addEventListener('DOMContentLoaded', () => {
+            renderGallery();
+            initSmartFloatingWhatsApp();
+            initAuraMap();
+        });
+    </script>
+</body>
+</html>
